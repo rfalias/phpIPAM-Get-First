@@ -24,6 +24,7 @@ class reservation:
         self.netmask = None
         self.dns = None
         self.description = None
+        self.default_gateway = None
 
 
 def cidr_to_netmask(cidr):
@@ -61,6 +62,7 @@ def get_subnets_by_vlan(vlan, app, token, res, url):
             res.dns = ns
             res.description = desc
             res.netmask = x['mask']
+            res.default_gateway = x['custom_DefaultGateway']
             return x['id']
 
 
@@ -82,6 +84,7 @@ def get_subnets_by_id(vid, app, token, res, url):
     res.dns = ns
     res.description = data['description']
     res.netmask = data['mask']
+    res.default_gateway = data['custom_DefaultGateway']
     return data['id']
 
 
@@ -107,6 +110,7 @@ def get_subnets_by_desc(vlan, app, token, res, url):
             res.dns = ns
             res.description = desc
             res.netmask = x['mask']
+            res.default_gateway = x['custom_DefaultGateway']
             return x['id']
 
 
@@ -132,6 +136,7 @@ def pretty_print(res):
     print("Netmask:%s"% cidr_to_netmask("%s/%s"%(res.ip_address, res.netmask)))
     print("DNSServers:%s"%" ".join(res.dns))
     print("VLANName:%s"%res.description)
+    print("DefaultGateway:%s"%res.default_gateway)
 
 
 def reserve_address(vlan_id, app, token, res, url):
@@ -158,7 +163,6 @@ if __name__ == "__main__":
     if not args.allow_duplicate:
         do_search = search_hostname(args.app, args.token, res, args.ipam)
     if do_search:
-        print("Existing record found")
         pretty_print(res)
         exit(0)
     if args.vlan:
